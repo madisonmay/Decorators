@@ -7,7 +7,7 @@ def log(fn):
       if hasmethod(t[0], fn.__name__):
         # object method
         args = t[1:]
-        prefix = t[0].__class__.__name__ + "." + fn.__name__
+        prefix = t[0].__class__.__name__ + "()." + fn.__name__
       else:
         # function
         args = t[:]
