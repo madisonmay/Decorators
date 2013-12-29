@@ -3,12 +3,20 @@ def hasmethod(obj, method_name):
 
 def log(fn):
   def logger(*t, **d):
-    if hasmethod(t[0], fn.__name__):
+    try:
+      if hasmethod(t[0], fn.__name__):
+        # object method
+        args = t[1:]
+        prefix = t[0].__class__.__name__ + "." + fn.__name__
+      else:
+        # function
+        args = t[:]
+        prefix = fn.__name__
+    except AttributeError:
+      # class method
       args = t[1:]
-      prefix = t[0].__class__.__name__ + "." + fn.__name__
-    else:
-      args = t[:]
-      prefix = fn.__name__
+      prefix = t[0].__name__ + "." + fn.__name__
+
     str_args = ", ".join(str(arg) for arg in args)
     str_kwargs = ", ".join(str(k) + '=' + str(v) for k, v in d.items())
     join = ""
@@ -29,7 +37,7 @@ if __name__ == '__main__':
 
   class Adder:
     @log
-    def add(self, x, y):
+    def add(cls, x, y):
       return x + y
 
   add(3, 5)
